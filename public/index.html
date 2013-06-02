@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+    <link href="styles/main.css" rel="stylesheet" type="text/css">
+</head>
+<body onload="onLoad()">
+    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    var jobId = null;
+
+    //
+    function onLoad() {
+        var socket = io.connect('http://localhost:3000');
+
+        socket.on('jobEnd', function(data) {
+            var job = data;
+
+            if (job._id == jobId) {
+                if (job.status == 1) {
+                    document.getElementById("statusText").innerHTML = "Model: " + job.result.name.toString() + "<br>" +
+                            "Mass: " + job.result.mass.toString() + "<br>" +
+                            "Volume: " + job.result.volume.toString();
+                }
+                else
+                {
+                    var element = document.getElementById("statusText");
+
+                    element.style.color = "red";
+                    element.innerHTML = "There was error during job processing (error code: " + job.result.error.toString() + ")";
+                }
+            }
+        });
+    }
+
+    //
+    function loadModels() {
+        var req = new XMLHttpRequest();
+
+        req.open("GET", "http://localhost:3000/models", false);
+        req.send(null);
+        var result = JSON.parse(req.responseText);
+        var combo = document.getElementById("models");
+
+        for (var i = 0; i < result.models.length; i++) {
+            var newItem = document.createElement("option");
+
+            newItem.text = result.models[i].name;
+            newItem.value = result.models[i].id;
+            combo.options.add(newItem);
+        }
+    }
+
+    //
+    function getModelProperties() {
+        var combo = document.getElementById("models");
+        var req = new XMLHttpRequest();
+
+        req.open("GET", "http://localhost:3000/models/" + combo.options[combo.selectedIndex].text + "/properties", false);
+        req.send(null);
+        var result = JSON.parse(req.responseText);
+
+        jobId = result._id;
+        var element = document.getElementById("statusText");
+
+        element.style.color = "";
+        element.innerHTML = "Calculating properties...wait (job id: " + result._id + ")";
+    }
+
+    </script>
+    <h2>node / Mass Calculator</h2>
+    <select id="models"></select>
+    <form name="test" action="" method="post">
+        <input type="button" name="btnLoadModels" value="Load Models" onclick="loadModels()" />
+        <input type="button" name="btnGetModelProps" value="Get Properties" onclick="getModelProperties()" />
+    </form>
+    <div id="statusText">This is test</div>
+</body>
+</html>
