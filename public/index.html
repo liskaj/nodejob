@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test</title>
+    <title>node / Mass Calculator</title>
     <link href="styles/main.css" rel="stylesheet" type="text/css">
 </head>
 <body onload="onLoad()">
-    <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="http://adsknodejob.cloudapp.net:3000/socket.io/socket.io.js"></script>
     <script type="text/javascript">
     var jobId = null;
 
     //
     function onLoad() {
-        var socket = io.connect('http://localhost:3000');
+        var socket = io.connect('http://adsknodejob.cloudapp.net:3000');
 
         socket.on('jobEnd', function(data) {
             var job = data;
@@ -37,7 +37,7 @@
     function loadModels() {
         var req = new XMLHttpRequest();
 
-        req.open("GET", "http://localhost:3000/models", false);
+        req.open("GET", "http://adsknodejob.cloudapp.net:3000/models", false);
         req.send(null);
         var result = JSON.parse(req.responseText);
         var combo = document.getElementById("models");
@@ -56,7 +56,7 @@
         var combo = document.getElementById("models");
         var req = new XMLHttpRequest();
 
-        req.open("GET", "http://localhost:3000/models/" + combo.options[combo.selectedIndex].text + "/properties", false);
+        req.open("GET", "http://adsknodejob.cloudapp.net:3000/models/" + combo.options[combo.selectedIndex].text + "/properties", false);
         req.send(null);
         var result = JSON.parse(req.responseText);
 
