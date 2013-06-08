@@ -1,5 +1,4 @@
-var child_process = require('child_process'),
-    express = require('express'),
+var express = require('express'),
     http = require('http'),
     io = require('socket.io'),
     models = require('./models'),
@@ -49,6 +48,5 @@ server.listen(port, function() {
     console.log('Listening on ' + port);
 });
 
-//executeHandler();
 
 
